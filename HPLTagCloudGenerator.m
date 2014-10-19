@@ -113,9 +113,10 @@
 
     int max = [(NSNumber *) [smoothedTagDict objectForKey:[sortedTags objectAtIndex:0]] intValue];
     int min = [(NSNumber *) [smoothedTagDict objectForKey:[sortedTags objectAtIndex:[sortedTags count]-1]] intValue];
+
     min--;
 
-    CGFloat maxWidth = [[UIScreen mainScreen] bounds].size.width - 30;
+    CGFloat maxWidth = self.size.width - 40;
 
     for (NSString *tag in sortedTags) {
 
@@ -123,19 +124,19 @@
         float fontSize = ceilf(maxFontsize * (count - min) / (max - min)) + 5;
 
         UIFont *tagFont = [UIFont systemFontOfSize:fontSize];
-        CGSize size = [HPLTagCloudGenerator sizeForString:tag withFont:tagFont];
+        CGSize tagSize = [HPLTagCloudGenerator sizeForString:tag withFont:tagFont];
 
-        while (size.width >= maxWidth) {
+        while (tagSize.width >= maxWidth) {
             maxFontsize-=2;
             fontSize = ceilf(maxFontsize * (count - min) / (max - min)) + 5;
 
             tagFont = [UIFont systemFontOfSize:fontSize];
-            size = [HPLTagCloudGenerator sizeForString:tag withFont:tagFont];
+            tagSize = [HPLTagCloudGenerator sizeForString:tag withFont:tagFont];
         }
 
         // check intersections
         CGPoint center = [self getNextPosition];
-        UILabel *tagLabel = [[UILabel alloc] initWithFrame:CGRectMake(center.x - size.width/2, center.y - size.height/2, size.width, size.height)];
+        UILabel *tagLabel = [[UILabel alloc] initWithFrame:CGRectMake(center.x - tagSize.width/2, center.y - tagSize.height/2, tagSize.width, tagSize.height)];
 
 
         tagLabel.text = tag;
@@ -143,7 +144,7 @@
 
         while([self checkIntersectionWithView:tagLabel viewArray:tagViews]) {
             CGPoint center = [self getNextPosition];
-            tagLabel.frame = CGRectMake(center.x - size.width/2, center.y - size.height/2, size.width, size.height);
+            tagLabel.frame = CGRectMake(center.x - tagSize.width/2, center.y - tagSize.height/2, tagSize.width, tagSize.height);
         }
 
         [tagViews addObject:tagLabel];
