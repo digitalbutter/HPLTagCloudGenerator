@@ -47,6 +47,22 @@
     return NO;
 }
 
++ (CGSize)sizeForString:(NSString*)string withFont:(UIFont*)font
+{
+    CGSize size;
+    if ([string respondsToSelector:@selector(sizeWithAttributes:)])
+    {
+        size = [string sizeWithAttributes:@{NSFontAttributeName:font}];
+    }
+    else
+    {
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        size = [string sizeWithFont:font];
+        #pragma GCC diagnostic pop
+    }
+    return size;
+}
 
 - (NSArray *)generateTagViews {
     float maxFontsize = 60.0;
@@ -84,7 +100,8 @@
     //
     // so that things look nicer
 
-    for(int i=[sortedTags count]-1; i>0; i--) {
+    for(NSInteger i=[sortedTags count]-1; i>0; i--)
+    {
         int curVal = [(NSNumber *) [smoothedTagDict objectForKey:[sortedTags objectAtIndex:i]] intValue];
         int nextVal = [(NSNumber *) [smoothedTagDict objectForKey:[sortedTags objectAtIndex:i-1]] intValue];
 
@@ -106,14 +123,14 @@
         float fontSize = ceilf(maxFontsize * (count - min) / (max - min)) + 5;
 
         UIFont *tagFont = [UIFont systemFontOfSize:fontSize];
-        CGSize size = [tag sizeWithFont:tagFont];
+        CGSize size = [HPLTagCloudGenerator sizeForString:tag withFont:tagFont];
 
         while (size.width >= maxWidth) {
             maxFontsize-=2;
             fontSize = ceilf(maxFontsize * (count - min) / (max - min)) + 5;
 
             tagFont = [UIFont systemFontOfSize:fontSize];
-            size = [tag sizeWithFont:tagFont];
+            size = [HPLTagCloudGenerator sizeForString:tag withFont:tagFont];
         }
 
         // check intersections
