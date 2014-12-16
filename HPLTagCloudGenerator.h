@@ -9,11 +9,19 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+@interface HPLBorderedTag : UIView
+@property (nonatomic, strong) UIButton *button;
+@property (nonatomic, assign) CGFloat outerMargin;
+@end
+
 @interface HPLTagCloudGenerator : NSObject
 
+@property UIFont *tagFont;
 
 // Dictionary of tags -> # of occurances
 @property NSDictionary *tagDict;
+@property NSDictionary *attributesDict;
+@property NSDictionary *titlesDict;
 
 // The size of the view that
 // we are creating a tag cloud for
