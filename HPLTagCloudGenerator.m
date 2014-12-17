@@ -147,13 +147,13 @@
         CGSize tagSize = [HPLTagCloudGenerator sizeForString:[title uppercaseString] withFont:self.tagFont];
         tagSize = CGSizeMake(bubbleSize, bubbleSize);
         
-        while (tagSize.width >= maxWidth) {
-            maxFontsize-=2;
-            bubbleSize = ceilf((maxWidth / [smoothedTagDict count]) * (count - min) / (max - min)) + minWidth;
-            
-            tagSize = [HPLTagCloudGenerator sizeForString:[title uppercaseString] withFont:self.tagFont];
-            tagSize = CGSizeMake(bubbleSize, bubbleSize);
-        }
+//        while (tagSize.width >= maxWidth) {
+//            maxFontsize-=2;
+//            bubbleSize = ceilf((maxWidth / [smoothedTagDict count]) * (count - min) / (max - min)) + minWidth;
+//            
+//            tagSize = [HPLTagCloudGenerator sizeForString:[title uppercaseString] withFont:self.tagFont];
+//            tagSize = CGSizeMake(bubbleSize, bubbleSize);
+//        }
         
         // check intersections
         CGPoint center = [self getNextPosition:tagSize];

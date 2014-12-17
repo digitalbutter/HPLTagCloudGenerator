@@ -47,4 +47,5 @@
 @property (nonatomic, strong) HPLTagCloudGenerator *generator;
 @property (nonatomic, strong) UIColor *backgroundColor;
 @property (nonatomic, assign) CGFloat outerMargin;
+@property (nonatomic, assign) BOOL expanded;
 @end
