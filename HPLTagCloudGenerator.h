@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@interface HPLBorderedTag : UIView
-@property (nonatomic, strong) UIButton *button;
+@interface HPLBorderedTag : UIButton
+@property (nonatomic, strong) UIColor *backgroundColor;
 @property (nonatomic, assign) CGFloat outerMargin;
 @end
 
@@ -47,3 +47,4 @@
 - (NSArray *)generateTagViews;
 
 @end
+

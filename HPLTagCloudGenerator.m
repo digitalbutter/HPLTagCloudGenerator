@@ -10,6 +10,7 @@
 #import <math.h>
 
 @implementation HPLBorderedTag
+@synthesize backgroundColor = _backgroundColor;
 
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -19,36 +20,49 @@
     self.layer.shadowRadius = 4.0f;
     self.layer.shadowOpacity = 0.2f;
     
-    self.button = [[UIButton alloc] initWithFrame:CGRectZero];
-    self.button.titleLabel.adjustsFontSizeToFitWidth = YES;
-    self.button.titleLabel.textAlignment = NSTextAlignmentCenter;
+    self.titleLabel.adjustsFontSizeToFitWidth = YES;
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    
+    self.outerMargin = 3.0f;
     
     CGFloat innerMargin = 3.0f;
-    self.button.titleEdgeInsets = UIEdgeInsetsMake(0.0f, innerMargin, 0.0f, innerMargin);
-    [self addSubview:self.button];
+    self.titleEdgeInsets = UIEdgeInsetsMake(0.0f, innerMargin, 0.0f, innerMargin);
     
     return self;
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.button.frame = CGRectMake(self.outerMargin,
-                                   self.outerMargin,
-                                   self.frame.size.width - self.outerMargin * 2,
-                                   self.frame.size.height - self.outerMargin * 2);
-    self.button.layer.cornerRadius = self.button.frame.size.width / 2;
-    self.button.clipsToBounds = YES;
+    self.layer.cornerRadius = self.frame.size.width / 2;
+    self.clipsToBounds = YES;
+    
+    if (self.backgroundColor)
+        [self setBackgroundColor:self.backgroundColor];
+}
+
+#pragma mark mutators
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
+    _backgroundColor = backgroundColor;
     
     CGFloat h, s, b, a;
-    [self.button.backgroundColor getHue:&h saturation:&s brightness:&b alpha:&a];
+    [backgroundColor getHue:&h saturation:&s brightness:&b alpha:&a];
     UIColor *darkerBackgroundColor = [UIColor colorWithHue:h saturation:s brightness:b * 0.9 alpha:a];
     CAGradientLayer *gradientLayer = [CAGradientLayer layer];
-    gradientLayer.frame = self.bounds;
-    gradientLayer.colors = [NSArray arrayWithObjects:(id)self.button.backgroundColor.CGColor, (id)darkerBackgroundColor.CGColor, nil];
+    gradientLayer.frame = CGRectMake(self.outerMargin,
+                                     self.outerMargin,
+                                     self.bounds.size.width - self.outerMargin * 2,
+                                     self.bounds.size.height - self.outerMargin * 2);
+    gradientLayer.cornerRadius = gradientLayer.frame.size.width / 2;
+    gradientLayer.colors = @[(id)backgroundColor.CGColor, (id)darkerBackgroundColor.CGColor];
     gradientLayer.startPoint = CGPointMake(1.0f, 0.0f);
     gradientLayer.endPoint = CGPointMake(1.0f, 1.0f);
-    [self.button.layer insertSublayer:gradientLayer atIndex:0];
-    self.button.backgroundColor = [UIColor clearColor];
+    for (CALayer *layer in self.layer.sublayers) {
+        if ([layer isKindOfClass:[CAGradientLayer class]]) {
+            [layer removeFromSuperlayer];
+            break;
+        }
+    }
+    [self.layer insertSublayer:gradientLayer atIndex:0];
 }
 
 /*
@@ -147,11 +161,11 @@
         CGPoint center = [self getNextPosition:tagSize];
         HPLBorderedTag *tagLabel = [[HPLBorderedTag alloc] initWithFrame:CGRectMake(center.x - tagSize.width/2, center.y - tagSize.width/2, tagSize.width, tagSize.width)];
         
-        [tagLabel.button setTitle:[title uppercaseString] forState:UIControlStateNormal];
-        tagLabel.button.titleLabel.font = self.tagFont;
+        [tagLabel setTitle:[title uppercaseString] forState:UIControlStateNormal];
+        tagLabel.titleLabel.font = self.tagFont;
         
         UIColor *backgroundColor = self.attributesDict[tag][NSBackgroundColorAttributeName];
-        tagLabel.button.backgroundColor = backgroundColor;
+        tagLabel.backgroundColor = backgroundColor;
         
         while([self checkIntersectionWithView:tagLabel viewArray:tagViews]) {
             CGPoint center = [self getNextPosition:tagSize];
@@ -165,3 +179,4 @@
 }
 
 @end
+
