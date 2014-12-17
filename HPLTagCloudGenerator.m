@@ -33,7 +33,6 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.layer.cornerRadius = self.frame.size.width / 2;
     self.clipsToBounds = YES;
     
     if (self.backgroundColor)
@@ -127,31 +126,30 @@
 - (NSArray *)generateTagViews {
     float maxFontsize = 30.0;
     
-    NSMutableDictionary *smoothedTagDict = [NSMutableDictionary dictionaryWithDictionary:self.tagDict];
+    NSMutableArray *smoothedTagDict = [self.tagDict mutableCopy];
     
     NSMutableArray *tagViews = [[NSMutableArray alloc] init];
-    NSArray *sortedTags = [self.tagDict allKeys];
     
-    int max = [(NSNumber *) [smoothedTagDict objectForKey:[sortedTags objectAtIndex:0]] intValue];
-    int min = [(NSNumber *) [smoothedTagDict objectForKey:[sortedTags objectAtIndex:[sortedTags count]-1]] intValue];
+    int max = [(NSNumber *)smoothedTagDict[0] intValue];
+    int min = [(NSNumber *)smoothedTagDict[[smoothedTagDict count]-1] intValue];
     
     min--;
     
     CGFloat maxWidth = self.size.width - 64.0f;
     CGFloat minWidth = 32.0f;
     
-    for (NSString *tag in sortedTags) {
-        NSString *title = self.titlesDict[tag];
+    for (int i = 0; i < [smoothedTagDict count]; i++) {
+        NSString *title = self.titlesDict[i];
         
-        int count = [(NSNumber *) [smoothedTagDict objectForKey:tag] intValue];
-        float bubbleSize = ceilf((maxWidth / [sortedTags count]) * (count - min) / (max - min)) + minWidth;
+        int count = [(NSNumber *) smoothedTagDict[i] intValue];
+        float bubbleSize = ceilf((maxWidth / [smoothedTagDict count]) * (count - min) / (max - min)) + minWidth;
         
         CGSize tagSize = [HPLTagCloudGenerator sizeForString:[title uppercaseString] withFont:self.tagFont];
         tagSize = CGSizeMake(bubbleSize, bubbleSize);
         
         while (tagSize.width >= maxWidth) {
             maxFontsize-=2;
-            bubbleSize = ceilf((maxWidth / [sortedTags count]) * (count - min) / (max - min)) + minWidth;
+            bubbleSize = ceilf((maxWidth / [smoothedTagDict count]) * (count - min) / (max - min)) + minWidth;
             
             tagSize = [HPLTagCloudGenerator sizeForString:[title uppercaseString] withFont:self.tagFont];
             tagSize = CGSizeMake(bubbleSize, bubbleSize);
@@ -164,7 +162,7 @@
         [tagLabel setTitle:[title uppercaseString] forState:UIControlStateNormal];
         tagLabel.titleLabel.font = self.tagFont;
         
-        UIColor *backgroundColor = self.attributesDict[tag][NSBackgroundColorAttributeName];
+        UIColor *backgroundColor = self.attributesDict[i][NSBackgroundColorAttributeName];
         tagLabel.backgroundColor = backgroundColor;
         
         while([self checkIntersectionWithView:tagLabel viewArray:tagViews]) {
@@ -172,6 +170,7 @@
             tagLabel.frame = CGRectMake(center.x - tagSize.width/2, center.y - tagSize.width/2, tagSize.width, tagSize.width);
         }
         
+        tagLabel.generator = self;
         [tagViews addObject:tagLabel];
     }
     
@@ -179,4 +178,3 @@
 }
 
 @end
-
