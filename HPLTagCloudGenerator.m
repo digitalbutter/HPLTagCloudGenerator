@@ -124,19 +124,17 @@
 }
 
 - (NSArray *)generateTagViews {
-    float maxFontsize = 30.0;
-    
     NSMutableArray *smoothedTagDict = [self.tagDict mutableCopy];
     
     NSMutableArray *tagViews = [[NSMutableArray alloc] init];
     
-    int max = [(NSNumber *)smoothedTagDict[0] intValue];
-    int min = [(NSNumber *)smoothedTagDict[[smoothedTagDict count]-1] intValue];
+    int max = [[smoothedTagDict valueForKeyPath:@"@max.intValue"] intValue];
+    int min = [[smoothedTagDict valueForKeyPath:@"@min.intValue"] intValue];
     
     min--;
     
     CGFloat maxWidth = self.size.width - 64.0f;
-    CGFloat minWidth = 32.0f;
+    CGFloat minWidth = 64.0f;
     
     for (int i = 0; i < [smoothedTagDict count]; i++) {
         NSString *title = self.titlesDict[i];
