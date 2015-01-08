@@ -128,8 +128,8 @@
     
     NSMutableArray *tagViews = [[NSMutableArray alloc] init];
     
-    int max = [[smoothedTagDict valueForKeyPath:@"@max.intValue"] intValue];
-    int min = [[smoothedTagDict valueForKeyPath:@"@min.intValue"] intValue];
+    int max = [[smoothedTagDict valueForKeyPath:@"@max.self"] intValue];
+    int min = [[smoothedTagDict valueForKeyPath:@"@min.self"] intValue];
     
     min--;
     
